@@ -1,28 +1,48 @@
-version: "3.1"
+version: "3.4"
+x-restart-policy: &restart_policy
+  restart: unless-stopped
 services:
   postgres:
+    <<: *restart_policy
+    env_file:
+      - .env
     image: postgres:12
-    hostname: postgres
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: dispatch
-      POSTGRES_DB: dispatch
     volumes:
-      - postgres-data:/var/lib/postgresql/data
-    restart: unless-stopped
-
-  pgadmin:
-    image: dpage/pgadmin4
+      - "dispatch-postgres:/var/lib/postgresql/data"
+  core:
+    image: fiverr/dispatch:latest
+    env_file:
+      - .env
+    # build:
+    #   # Pro-tip: point this to a relative directory containing the Dispatch
+    #   # project root to pick up changes from your dev environment
+    #   # (e.g., ../dispatch-root)
+    #   # context: https://github.com/Netflix/dispatch.git#latest
+    #   context: ..
+  web:
+    <<: *restart_policy
+    image: fiverr/dispatch:latest
     depends_on:
       - postgres
+      - core
+    env_file:
+      - .env
+    command: ["server", "start", "dispatch.main:app", "--host=0.0.0.0"]
     ports:
-      - "5555:80"
+      - "8000:8000"
+  scheduler:
+    <<: *restart_policy
+    image: fiverr/dispatch:latest
+    depends_on:
+      - postgres
+      - core
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: dispatch@netflix.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    restart: unless-stopped
-
+      - STATIC_DIR=
+    command: ["scheduler", "start"]
 volumes:
-  postgres-data:
+  dispatch-postgres:
+    external: true
