@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dispatch-scheduler
+  labels:
+    app: dispatch-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dispatch-scheduler
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: dispatch-scheduler
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+        - name: regsecret
+      containers:
+        - name: dispatch-scheduler
+          image: fiverr/dispatch-scheduler:latest
+          imagePullPolicy: IfNotPresent
+          command: ["scheduler", "start"]
+          envFrom:
+            - configMapRef:
+                name: dispathConf
+          resources:
+            requests:
+              cpu: 150m
+              memory: 1000Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File

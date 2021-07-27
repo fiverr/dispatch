@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dispatch-core
+  labels:
+    app: dispatch-core
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dispatch-core
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: dispatch-core
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+        - name: regsecret
+      containers:
+        - name: dispatch-core
+          image: fiverr/dispatch-core:latest
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: dispathConf
+          resources:
+            requests:
+              cpu: 150m
+              memory: 1000Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File

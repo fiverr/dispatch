@@ -1,0 +1,56 @@
+---
+# PostgreSQL StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dispatch-postgresql-db
+spec:
+  serviceName: postgresql-db-service
+  selector:
+    matchLabels:
+      app: postgresql-db
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: postgresql-db
+    spec:
+      containers:
+        - name: postgresql-db
+          image: postgres:latest
+          volumeMounts:
+            - name: postgresql-db-disk
+              mountPath: /data
+          env:
+            - name: POSTGRES_USER
+              value: dispatch
+            - name: POSTGRES_PASSWORD
+              value: dispatch
+            - name: POSTGRES_DB
+              value: dispatch
+            - name: PGDATA
+              value: /data/pgdata
+  # Volume Claim
+  volumeClaimTemplates:
+    - metadata:
+        name: postgresql-db-disk
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp2
+        resources:
+          requests:
+            storage: 10Gi
+
+---
+# PostgreSQL StatefulSet Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: dispatch-postgres-db-lb
+spec:
+  selector:
+    app: postgresql-db
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: 5432
