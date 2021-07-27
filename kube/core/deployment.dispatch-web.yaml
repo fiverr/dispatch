@@ -33,6 +33,9 @@ spec:
           image: fiverr/dispatch-web:latest
           imagePullPolicy: IfNotPresent
           command: ["server", "start", "dispatch.main:app", "--host=0.0.0.0"]
+          envFrom:
+            - configMapRef:
+                name: dispath
           resources:
             requests:
               cpu: 150m

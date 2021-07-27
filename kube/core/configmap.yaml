@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dispathConf
+  name: dispath
 data:
   # For configuration details, see: https://hawkins.gitbook.io/dispatch/configuration/app
 

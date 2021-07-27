@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: dispathConf
+                name: dispath
           resources:
             requests:
               cpu: 150m
