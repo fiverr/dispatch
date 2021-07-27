@@ -30,7 +30,7 @@ spec:
         - name: regsecret
       containers:
         - name: dispatch-web
-          image: fiverr/dispatch-web:latest
+          image: fiverr/dispatch:latest
           imagePullPolicy: IfNotPresent
           command: ["server", "start", "dispatch.main:app", "--host=0.0.0.0"]
           envFrom:
