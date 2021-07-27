@@ -32,7 +32,14 @@ spec:
         - name: dispatch-web
           image: fiverr/dispatch:latest
           imagePullPolicy: IfNotPresent
-          command: ["server", "start", "dispatch.main:app", "--host=0.0.0.0"]
+          command:
+            [
+              "dispatch",
+              "server",
+              "start",
+              "dispatch.main:app",
+              "--host=0.0.0.0",
+            ]
           envFrom:
             - configMapRef:
                 name: dispatch
