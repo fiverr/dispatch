@@ -32,7 +32,7 @@ spec:
         - name: dispatch-scheduler
           image: fiverr/dispatch:latest
           imagePullPolicy: IfNotPresent
-          command: ["scheduler", "start"]
+          command: ["dispatch", "scheduler", "start"]
           envFrom:
             - configMapRef:
                 name: dispatch
