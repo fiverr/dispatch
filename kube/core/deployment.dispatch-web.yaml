@@ -35,7 +35,7 @@ spec:
           command: ["server", "start", "dispatch.main:app", "--host=0.0.0.0"]
           envFrom:
             - configMapRef:
-                name: dispath
+                name: dispatch
           resources:
             requests:
               cpu: 150m
