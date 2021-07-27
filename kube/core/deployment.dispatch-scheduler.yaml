@@ -30,7 +30,7 @@ spec:
         - name: regsecret
       containers:
         - name: dispatch-scheduler
-          image: fiverr/dispatch-scheduler:latest
+          image: fiverr/dispatch:latest
           imagePullPolicy: IfNotPresent
           command: ["scheduler", "start"]
           envFrom:
